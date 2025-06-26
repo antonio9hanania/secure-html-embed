@@ -1,95 +1,92 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { useState } from "react";
+import StepOne from "@/components/StepOne";
+import StepTwo from "@/components/StepTwo";
+import StepThree from "@/components/StepThree";
+import StepNavigation from "@/components/StepNavigation";
+import { StepOneOutput, StepTwoOutput } from "@/types/embed";
 
 export default function Home() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [stepOneData, setStepOneData] = useState<StepOneOutput | null>(null);
+  const [stepTwoData, setStepTwoData] = useState<StepTwoOutput | null>(null);
+
+  const handleNext = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleReset = () => {
+    setCurrentStep(1);
+    setStepOneData(null);
+    setStepTwoData(null);
+  };
+
+  const canNext = () => {
+    switch (currentStep) {
+      case 1:
+        return stepOneData !== null;
+      case 2:
+        return stepTwoData !== null;
+      default:
+        return false;
+    }
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
+    <div className="container">
+      <header style={{ textAlign: "center", marginBottom: "30px" }}>
+        <h1 style={{ color: "#007bff", marginBottom: "10px" }}>
+          🔒 Secure HTML Embed System
+        </h1>
+        <p style={{ color: "#666", fontSize: "18px" }}>
+          Step-by-Step: Generate → Extract src → Use Directly in Next.js
         </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+      </header>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <StepNavigation
+        currentStep={currentStep}
+        onNext={handleNext}
+        onPrev={handlePrev}
+        onReset={handleReset}
+        canNext={canNext()}
+      />
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+      {currentStep === 1 && <StepOne onDataGenerated={setStepOneData} />}
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+      {currentStep === 2 && stepOneData && (
+        <StepTwo inputData={stepOneData} onJsonGenerated={setStepTwoData} />
+      )}
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+      {currentStep === 3 && stepTwoData && (
+        <StepThree embedJson={stepTwoData} />
+      )}
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      <footer
+        style={{
+          marginTop: "50px",
+          padding: "20px",
+          textAlign: "center",
+          color: "#666",
+          borderTop: "1px solid #dee2e6",
+        }}
+      >
+        <p>
+          🔒 <strong>Secure HTML Embed Generator</strong> - Complete XSS
+          Protection
+        </p>
+        <p style={{ fontSize: "14px", marginTop: "10px" }}>
+          Free • Open Source • Self-Hosted Iframe Resizer • Production Ready
+        </p>
+      </footer>
+    </div>
   );
 }
