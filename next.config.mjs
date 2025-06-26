@@ -6,13 +6,13 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Set base path if deploying to a subdirectory (repository name)
-  // basePath: '/secure-html-embed', // Uncomment if repo name is not your domain
 
-  // Disable server-side features for static export
+  // IMPORTANT: Set the correct basePath for your repo
+  basePath: "/secure-html-embed",
+  assetPrefix: "/secure-html-embed/",
+
+  // Output directory
   distDir: "out",
-
-
 };
 
 export default nextConfig;

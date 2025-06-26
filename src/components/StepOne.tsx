@@ -275,9 +275,10 @@ export default function StepOne({ onDataGenerated }: StepOneProps) {
       return;
     }
 
+    // Around line 200, in generateResponsiveEmbed function:
     const baseUrl =
       typeof window !== "undefined"
-        ? window.location.origin
+        ? window.location.origin + "/secure-html-embed" // Add basePath for GitHub Pages
         : "http://localhost:3000";
     const secureEmbed = createSecureEmbed(htmlContent, true, baseUrl);
 
