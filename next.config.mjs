@@ -7,9 +7,9 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  // IMPORTANT: Set the correct basePath for your repo
-  basePath: "/secure-html-embed",
-  assetPrefix: "/secure-html-embed/",
+  // Remove manual basePath - GitHub Actions will handle this automatically
+  // basePath: '/secure-html-embed',
+  // assetPrefix: '/secure-html-embed/',
 
   // Output directory
   distDir: "out",

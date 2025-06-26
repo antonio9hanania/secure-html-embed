@@ -14,7 +14,7 @@ A Next.js application that generates production-ready secure HTML embeds with co
 
 ## 🚀 Live Demo
 
-Visit the live demo: [https://antonio9hanania.github.io/secure-html-embed](https://yourusername.github.io/secure-html-embed)
+Visit the live demo: [https://antonio9hanania.github.io/secure-html-embed](https://antonio9hanania.github.io/secure-html-embed)
 
 ## 🏗️ How It Works
 
