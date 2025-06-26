@@ -83,7 +83,7 @@ export default function StepThree({ embedJson }: StepThreeProps) {
         <div style={{ padding: "20px" }}>
           <iframe
             ref={iframeRef}
-            src={embedJson.src} // ← Using src directly from JSON!
+            src={embedJson.src}
             style={{
               width: "100%",
               height: `${height}px`,
@@ -100,7 +100,6 @@ export default function StepThree({ embedJson }: StepThreeProps) {
         </div>
       </div>
 
-      {/* Test responsiveness */}
       <div style={{ marginTop: "15px", marginBottom: "20px" }}>
         <button
           className="button"
@@ -157,23 +156,23 @@ interface ResponsiveHtmlEmbedProps {
 function ResponsiveHtmlEmbed({ embedData }: ResponsiveHtmlEmbedProps) {
   const { iframeRef, height, isLoaded } = useIframeResizer({
     onResize: (newHeight) => {
-      console.log('Embed', embedData.id, 'resized to:', newHeight + 'px');
+      console.log("Embed", embedData.id, "resized to:", newHeight + "px");
     },
     minHeight: 150,
     maxHeight: 2000
   });
   
   return (
-    <div style={{ margin: '20px 0' }}>
+    <div style={{ margin: "20px 0" }}>
       <iframe
         ref={iframeRef}
-        src={embedData.src} // ← Direct usage, no regeneration!
+        src={embedData.src} // Direct usage, no regeneration!
         style={{ 
-          width: '100%', 
-          height: height + 'px',
-          border: 'none',
-          minHeight: '150px',
-          transition: 'height 0.3s ease'
+          width: "100%", 
+          height: height + "px",
+          border: "none",
+          minHeight: "150px",
+          transition: "height 0.3s ease"
         }}
         sandbox="allow-scripts allow-forms allow-popups allow-modals"
         title={\`Responsive HTML Embed \${embedData.id}\`}
@@ -188,7 +187,7 @@ function ArticleRenderer({ embeds }: { embeds: EmbedData[] }) {
     <article>
       {embeds.map(embed => {
         // Responsive HTML embeds - use src directly
-        if (embed.type === 'rawhtmlcoder' && embed.responsive) {
+        if (embed.type === "rawhtmlcoder" && embed.responsive) {
           return (
             <ResponsiveHtmlEmbed 
               key={embed.id} 
@@ -198,15 +197,15 @@ function ArticleRenderer({ embeds }: { embeds: EmbedData[] }) {
         }
         
         // Fixed height HTML embeds - also use src directly
-        if (embed.type === 'rawhtmlcoder' && !embed.responsive) {
+        if (embed.type === "rawhtmlcoder" && !embed.responsive) {
           return (
             <iframe
               key={embed.id}
-              src={embed.src} // ← Direct usage
+              src={embed.src} // Direct usage
               style={{ 
-                width: '100%', 
-                height: embed.height + 'px',
-                border: 'none' 
+                width: "100%", 
+                height: embed.height + "px",
+                border: "none" 
               }}
               sandbox="allow-scripts allow-forms allow-popups allow-modals"
               title={\`Fixed HTML Embed \${embed.id}\`}
@@ -247,7 +246,7 @@ export default function Article() {
                 <strong>Exact consistency</strong> - Same embed tested in Step 1
               </li>
               <li>
-                <strong>Simpler JSON</strong> - Only store what's needed
+                <strong>Simpler JSON</strong> - Only store what&apos;s needed
               </li>
               <li>
                 <strong>Better performance</strong> - No processing in Next.js

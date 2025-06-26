@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { generateEmbedId } from "@/utils/embedUtils";
 import { StepOneOutput, StepTwoOutput } from "@/types/embed";
 
@@ -13,12 +13,7 @@ export default function StepTwo({ inputData, onJsonGenerated }: StepTwoProps) {
   const [jsonOutput, setJsonOutput] = useState<StepTwoOutput | null>(null);
   const [processing, setProcessing] = useState(true);
 
-  useEffect(() => {
-    // Auto-process when component mounts
-    processResponsiveEmbed();
-  }, [inputData]);
-
-  const processResponsiveEmbed = () => {
+  const processResponsiveEmbed = useCallback(() => {
     setProcessing(true);
 
     try {
@@ -46,7 +41,12 @@ export default function StepTwo({ inputData, onJsonGenerated }: StepTwoProps) {
       console.error("Error processing embed code:", error);
       setProcessing(false);
     }
-  };
+  }, [inputData, onJsonGenerated]);
+
+  useEffect(() => {
+    // Auto-process when component mounts
+    processResponsiveEmbed();
+  }, [processResponsiveEmbed]);
 
   const copyJson = () => {
     if (jsonOutput) {
