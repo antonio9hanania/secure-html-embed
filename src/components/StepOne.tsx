@@ -253,15 +253,22 @@ export default function StepOne({ onDataGenerated }: StepOneProps) {
       return;
     }
 
-    const secureEmbed = createSecureEmbed(htmlContent, false);
+    const secureEmbed = createSecureEmbed(htmlContent, false); // false = no script needed
+
+    // Generate unique ID for this embed
+    const embedId = `secure-embed-${Date.now()}-${Math.floor(
+      Math.random() * 1000
+    )}`;
 
     const embedCode = `<!-- Secure Fixed Height HTML Embed -->
-<iframe 
-    style="width: 100%; border: 1px solid #ddd; height: ${height}px; border-radius: 5px;" 
-    sandbox="allow-scripts allow-forms allow-popups allow-modals"
-    src="${secureEmbed}"
-    title="Secure HTML Embed">
-</iframe>`;
+<div id="${embedId}" class="secure-embed-container" data-embed-type="fixed-html" data-embed-id="${embedId}" data-embed-height="${height}">
+  <iframe 
+      style="width: 100%; border: 1px solid #ddd; height: ${height}px; border-radius: 5px;" 
+      sandbox="allow-scripts allow-forms allow-popups allow-modals"
+      src="${secureEmbed}"
+      title="Secure HTML Embed">
+  </iframe>
+</div>`;
 
     setGeneratedEmbedCode(embedCode);
     setPreviewSrc(secureEmbed);
@@ -275,47 +282,51 @@ export default function StepOne({ onDataGenerated }: StepOneProps) {
       return;
     }
 
-    const baseUrl =
-      typeof window !== "undefined"
-        ? window.location.hostname === "antonio9hanania.github.io"
-          ? "https://antonio9hanania.github.io/secure-html-embed"
-          : window.location.origin
-        : "http://localhost:3000";
+    // Create iframe with script inside (where it belongs)
+    const secureEmbed = createSecureEmbed(htmlContent, true); // true = include script inside iframe
 
-    const secureEmbed = createSecureEmbed(htmlContent, true, baseUrl);
+    // Generate unique ID for this embed
+    const embedId = `secure-embed-${Date.now()}-${Math.floor(
+      Math.random() * 1000
+    )}`;
 
     const embedCode = `<!-- Secure Responsive HTML Embed -->
-<script>
-(function() {
-  let resizeTimeout;
-  function handleIframeMessage(event) {
-    if (event.data?.type === 'iframe-height-update') {
-      const iframes = document.querySelectorAll('iframe[data-responsive="true"]');
-      iframes.forEach(iframe => {
-        if (iframe.contentWindow === event.source) {
+<div id="${embedId}" class="secure-embed-container" data-embed-type="responsive-html" data-embed-id="${embedId}">
+  <!-- Parent-side message handler -->
+  <script>
+  (function() {
+    let resizeTimeout;
+    function handleIframeMessage(event) {
+      if (event.data?.type === 'iframe-height-update' && event.data?.source === 'iframe-child-resizer') {
+        // Target this specific iframe
+        const iframe = document.querySelector('#${embedId} iframe[data-responsive="true"]');
+        if (iframe && iframe.contentWindow === event.source) {
           clearTimeout(resizeTimeout);
           resizeTimeout = setTimeout(() => {
             iframe.style.height = Math.max(event.data.height, 150) + 'px';
+            console.log('Resized iframe ${embedId} to:', event.data.height + 'px');
           }, 10);
         }
-      });
+      }
     }
-  }
+    
+    // Add message listener (avoid duplicates)
+    if (!window.secureEmbedListeners) {
+      window.secureEmbedListeners = true;
+      window.addEventListener('message', handleIframeMessage);
+    }
+  })();
+  </script>
   
-  if (!window.iframeResizerInitialized) {
-    window.addEventListener('message', handleIframeMessage);
-    window.iframeResizerInitialized = true;
-  }
-})();
-</script>
-
-<iframe 
-    data-responsive="true"
-    style="width: 100%; border: 1px solid #ddd; min-height: 150px; border-radius: 5px;" 
-    sandbox="allow-scripts allow-forms allow-popups allow-modals"
-    src="${secureEmbed}"
-    title="Secure Responsive HTML Embed">
-</iframe>`;
+  <!-- Responsive iframe with script inside -->
+  <iframe 
+      data-responsive="true"
+      style="width: 100%; border: 1px solid #ddd; min-height: 150px; border-radius: 5px;" 
+      sandbox="allow-scripts allow-forms allow-popups allow-modals"
+      src="${secureEmbed}"
+      title="Secure Responsive HTML Embed">
+  </iframe>
+</div>`;
 
     setGeneratedEmbedCode(embedCode);
     setPreviewSrc(secureEmbed);

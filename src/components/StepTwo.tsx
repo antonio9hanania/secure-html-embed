@@ -17,11 +17,21 @@ export default function StepTwo({ inputData, onJsonGenerated }: StepTwoProps) {
     setProcessing(true);
 
     try {
-      // Extract the src attribute from the iframe (the complete secure embed)
+      // Extract the iframe src from within the container div
       const srcMatch = inputData.responsiveEmbedCode.match(/src="([^"]+)"/);
       if (!srcMatch) {
         throw new Error("Could not find iframe src in the embed code");
       }
+
+      // Extract the embed ID from the container
+      const idMatch = inputData.responsiveEmbedCode.match(/id="([^"]+)"/);
+      const embedId = idMatch ? idMatch[1] : `extracted-${Date.now()}`;
+
+      // Extract embed type from container
+      const typeMatch = inputData.responsiveEmbedCode.match(
+        /data-embed-type="([^"]+)"/
+      );
+      const embedType = typeMatch ? typeMatch[1] : "responsive-html";
 
       const srcUrl = srcMatch[1];
 
@@ -30,12 +40,13 @@ export default function StepTwo({ inputData, onJsonGenerated }: StepTwoProps) {
         id: generateEmbedId(),
         type: "rawhtmlcoder",
         responsive: true,
-        src: srcUrl, // Use the already generated secure src
+        src: srcUrl,
+        embedId: embedId, // Container ID for backend reference
         createdAt: new Date().toISOString(),
       };
 
       setJsonOutput(embedData);
-      onJsonGenerated(embedData); // Pass to Step 3
+      onJsonGenerated(embedData);
       setProcessing(false);
     } catch (error) {
       console.error("Error processing embed code:", error);

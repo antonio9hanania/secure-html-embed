@@ -21,14 +21,14 @@
     if (height !== lastHeight && height > 0) {
       lastHeight = height;
 
-      // Send height to parent via postMessage
+      // Send height to parent via postMessage with correct format
       try {
         window.parent.postMessage(
           {
             type: "iframe-height-update",
             height: height,
             timestamp: Date.now(),
-            source: "iframe-child-resizer",
+            source: "iframe-child-resizer", // Important: match this in parent handler
           },
           "*"
         );
@@ -72,25 +72,24 @@
       requestAnimationFrame(sendHeight);
     });
 
-    // Method 4: Listen for test messages
+    // Method 4: Test content handler
     window.addEventListener("message", function (event) {
       if (event.data?.type === "add-test-content") {
-        // Add test content to verify responsiveness
         const testDiv = document.createElement("div");
         testDiv.style.cssText =
           "padding: 20px; background: #e8f4fd; margin: 10px 0; border-radius: 5px;";
         testDiv.innerHTML =
-          "<h3>Test Content Added!</h3><p>This content was added dynamically to test the responsive iframe functionality.</p>";
+          "<h3>Test Content Added!</h3><p>This content was added dynamically to test responsiveness.</p>";
         document.body.appendChild(testDiv);
 
-        setTimeout(sendHeight, 100); // Send height after DOM update
+        setTimeout(sendHeight, 100);
       }
     });
 
     // Method 5: Periodic checking (fallback)
     setInterval(sendHeight, 500);
 
-    console.log("Iframe resizer initialized");
+    console.log("Iframe child resizer initialized successfully");
   }
 
   function init() {
@@ -101,25 +100,18 @@
       setupResizeDetection();
     }
 
-    // Send initial height after a short delay
+    // Send initial height
     setTimeout(() => {
       sendHeight();
       console.log("Initial height sent");
     }, 100);
 
-    // Send height again after images might load
+    // Send again after potential image loads
     setTimeout(sendHeight, 1000);
   }
 
   // Initialize when script loads
   init();
-
-  // Cleanup function (if needed)
-  window.iframeResizerCleanup = function () {
-    if (resizeObserver) resizeObserver.disconnect();
-    if (mutationObserver) mutationObserver.disconnect();
-    isInitialized = false;
-  };
 
   console.log("Iframe child resizer script loaded");
 })();

@@ -3,9 +3,9 @@ export function createSecureEmbed(
   responsive: boolean = false,
   baseUrl: string = ""
 ): string {
-  // Add custom resizer script for responsive mode
+  // Add iframe-resizer script for responsive mode (inside iframe where it belongs)
   const childScript = responsive
-    ? `\n<script src="${baseUrl}/iframe-child-resizer.js"></script>`
+    ? `\n<script src="https://antonio9hanania.github.io/secure-html-embed/iframe-child-resizer.js"></script>`
     : "";
 
   const fullHTML = `<!DOCTYPE html>
@@ -13,7 +13,7 @@ export function createSecureEmbed(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ${baseUrl}; script-src 'self' 'unsafe-inline' 'unsafe-eval' ${baseUrl} https://cdnjs.cloudflare.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://antonio9hanania.github.io https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://antonio9hanania.github.io https://cdnjs.cloudflare.com;">
     <title>Secure Embed</title>
     ${childScript}
 </head>

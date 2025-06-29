@@ -14,5 +14,6 @@ export interface StepTwoOutput {
   type: "rawhtmlcoder";
   responsive: true;
   src: string;
+  embedId?: string; // Add optional embedId for container reference
   createdAt: string;
 }
